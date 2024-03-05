@@ -16,7 +16,7 @@ func main() {
 	// initialize routes
 	router := gin.Default()
 	router.Use(func(c *gin.Context) {
-		log.Println("Middleware: Setting db in context")
+		log.Println("Middleware: Setting db in context", db)
 		c.Set("db", db)
 		c.Next()
 	})
