@@ -59,7 +59,7 @@ func GetTable(c *gin.Context, model interface{}) {
 
 	// Pagination
 	// Assuming helpers.Paginate returns a paginationResult with a *gorm.DB and Pagination data
-	paginationResult := helpers.Paginate(db, c, model)
+	paginationResult := helpers.Paginate(db, c, &model)
 
 	// Retrieve all records from the table
 	if err := paginationResult.DB.Find(&model).Error; err != nil {

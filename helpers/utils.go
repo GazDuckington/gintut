@@ -22,11 +22,22 @@ func Paginate(db *gorm.DB, c *gin.Context, m interface{}) *PaginationResult {
 
 	var count int64
 	db.Model(m).Count(&count)
-
+	var nextPage *int
+	if int(count) > offset+pageSize {
+		nextPageValue := page + 1
+		nextPage = &nextPageValue
+	}
+	// Calculate total pages
+	totalPages := 0
+	if count > 0 {
+		totalPages = int((count-1)/int64(pageSize) + 1)
+	}
 	pagination := map[string]interface{}{
-		"page":      page,
-		"page_size": pageSize,
-		"count":     int(count),
+		"page":        page,
+		"next_page":   nextPage,
+		"page_size":   pageSize,
+		"total_pages": totalPages,
+		"count":       int(count),
 	}
 
 	return &PaginationResult{
