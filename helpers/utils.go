@@ -12,7 +12,6 @@ import (
 type PaginationResult struct {
 	DB         *gorm.DB
 	Pagination map[string]interface{}
-	Count      int
 }
 
 // generic paginator for api returns
