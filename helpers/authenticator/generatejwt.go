@@ -41,9 +41,9 @@ func GenerateJWT(nik string) (string, error) {
 	}
 
 	claims := jwt.MapClaims{
-		"exp":  jwt.NewNumericDate(time.Now().Add(time.Duration(life) * time.Second.Abs())),
+		"exp":  jwt.NewNumericDate(time.Now().Add(time.Duration(life) * time.Hour)),
 		"iss":  "system",
-		"sub":  fmt.Sprintf("%d", personal.Nam),
+		"sub":  fmt.Sprintf("%s", personal.Nam),
 		"eml":  fmt.Sprintf("%s", personal.Eml),
 		"isat": jwt.NewNumericDate(time.Now()),
 	}

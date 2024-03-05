@@ -1,6 +1,7 @@
 package main
 
 import (
+	"gintut/helpers/authenticator"
 	"gintut/initializers"
 	"gintut/routes"
 	"log"
@@ -21,6 +22,11 @@ func main() {
 		c.Next()
 	})
 
-	routes.InitializeRoutes(router)
+	protected := router.Group("/protected")
+	protected.Use(authenticator.AuthMiddleware())
+	routes.RouteGroupProtected(protected)
+
+	unprotected := router.Group("/")
+	routes.RouteGroupUnprotected(unprotected)
 	router.Run() // listen and serve on 0.0.0.0:8080
 }
