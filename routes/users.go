@@ -7,9 +7,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	// "github.com/golang-jwt/jwt/v5"
 )
 
+// test only
 func ping(c *gin.Context) {
 	claims := authenticator.GetClaimsData(c)
 	c.JSON(http.StatusOK, gin.H{
