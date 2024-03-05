@@ -1,8 +1,10 @@
 package controllers
 
 import (
+	"fmt"
 	"gintut/helpers"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -12,8 +14,15 @@ import (
 func GetTable(c *gin.Context, model interface{}) {
 
 	// Get the DB instance from Gin's context
+	var order string
+	orderBy := c.Query("order_by") // Assuming 'order_by' is the query parameter for ordering
 	db := c.MustGet("db").(*gorm.DB)
 
+	// Apply ordering if specified
+	if orderBy != "" {
+		order = fmt.Sprintf(`"%s"`, strings.ToUpper(orderBy))
+		db = db.Order(order)
+	}
 	// Dynamic filter
 	// Assuming helpers.DynamicFilter accepts a *gorm.DB and returns a *gorm.DB
 	db = helpers.DynamicFilter(db, c)

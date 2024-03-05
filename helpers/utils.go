@@ -41,6 +41,7 @@ func DynamicFilter(db *gorm.DB, c *gin.Context) *gorm.DB {
 	// Remove pagination parameters
 	qParams.Del("page")
 	qParams.Del("page_size")
+	qParams.Del("order_by")
 
 	// Create dynamic filters
 	var dynamicFilters []string
