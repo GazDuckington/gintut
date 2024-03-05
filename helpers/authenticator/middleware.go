@@ -1,6 +1,7 @@
 package authenticator
 
 import (
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -33,16 +34,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		authToken := authHeaderParts[1]
 
 		// Validate the token (you should implement your own token validation logic here)
-		ok, token := isValidToken(authToken)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-			c.Abort()
-			return
-		}
-		// Extract claims from the token
-		claims, ok := token.Claims.(jwt.MapClaims)
-		if !ok {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
+		claims, err := isValidToken(authToken)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token", "details": err.Error()})
 			c.Abort()
 			return
 		}
@@ -52,12 +46,12 @@ func AuthMiddleware() gin.HandlerFunc {
 	}
 }
 
-func isValidToken(tokenString string) (bool, *jwt.Token) {
+func isValidToken(tokenString string) (jwt.MapClaims, error) {
 	var secret = os.Getenv("SUPER_SECRET")
 	if secret == "" {
 		// Handle the case when SUPER_SECRET is not set
 		log.Println("key environment variable is not set")
-		return false, nil
+		return nil, errors.New("key environment variable is not set")
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
@@ -67,8 +61,15 @@ func isValidToken(tokenString string) (bool, *jwt.Token) {
 	if err != nil {
 		// Handle the case when there's an error parsing the token
 		log.Println("Error parsing token:", err)
-		return false, nil
+		return nil, errors.New("Error parsing token")
 	}
 
-	return token.Valid, token
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok || !token.Valid {
+		// Handle the case when the token is invalid
+		log.Println("Invalid token")
+		return nil, errors.New("Invalid token")
+	}
+
+	return claims, nil
 }

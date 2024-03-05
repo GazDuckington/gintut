@@ -11,7 +11,7 @@ import (
 )
 
 func ping(c *gin.Context) {
-	claims := authenticator.ClaimsHandler(c)
+	claims := authenticator.GetClaimsData(c)
 	c.JSON(http.StatusOK, gin.H{
 		"message": "pong",
 		"claims":  claims,

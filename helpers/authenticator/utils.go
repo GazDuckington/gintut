@@ -28,7 +28,7 @@ func CheckPassword(storedHash string, plaintextPassword string) bool {
 	return subtle.ConstantTimeCompare(derivedKey, hashedPassword) == 1
 }
 
-func ClaimsHandler(c *gin.Context) jwt.MapClaims {
+func GetClaimsData(c *gin.Context) jwt.MapClaims {
 	claims, exists := c.Get("claims")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"message": "claims not found"})
