@@ -4,12 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// RouteGroupProtected sets up the album routes
+// route group to be protected by bearer token
 func RouteGroupProtected(router *gin.RouterGroup) {
 	router.GET("/ping", ping)
 	router.GET("/personal", GetAllPersonal)
 }
 
+// route group to be unprotected by bearer token
 func RouteGroupUnprotected(router *gin.RouterGroup) {
 	router.POST("/login", Login)
 }

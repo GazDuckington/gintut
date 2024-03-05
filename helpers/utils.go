@@ -15,6 +15,7 @@ type PaginationResult struct {
 	Count      int
 }
 
+// generic paginator for api returns
 func Paginate(db *gorm.DB, c *gin.Context, m interface{}) *PaginationResult {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
@@ -35,6 +36,7 @@ func Paginate(db *gorm.DB, c *gin.Context, m interface{}) *PaginationResult {
 	}
 }
 
+// add dynamic filtering on models fields
 func DynamicFilter(db *gorm.DB, c *gin.Context) *gorm.DB {
 	qParams := c.Request.URL.Query()
 

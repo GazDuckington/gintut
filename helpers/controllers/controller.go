@@ -12,6 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// query a model
 func GetModel(model interface{}, fieldName string, fieldValue interface{}) error {
 	initializers.InitEnv()
 	db := initializers.InitDb()
@@ -30,7 +31,7 @@ func GetModel(model interface{}, fieldName string, fieldValue interface{}) error
 	return nil
 }
 
-// GetAll is a generic function to fetch all records of a given model.
+// generic function to fetch all records of a given model.
 func GetTable(c *gin.Context, model interface{}) {
 	var order string
 

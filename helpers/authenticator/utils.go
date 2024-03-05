@@ -4,9 +4,13 @@ import (
 	"crypto/sha256"
 	"crypto/subtle"
 	"encoding/base64"
-	"golang.org/x/crypto/pbkdf2"
+	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/pbkdf2"
 )
 
 // checkPassword checks if the provided password matches the stored hashed password
@@ -22,4 +26,12 @@ func CheckPassword(storedHash string, plaintextPassword string) bool {
 
 	// Compare the derived key with the stored hashed password
 	return subtle.ConstantTimeCompare(derivedKey, hashedPassword) == 1
+}
+
+func ClaimsHandler(c *gin.Context) jwt.MapClaims {
+	claims, exists := c.Get("claims")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"message": "claims not found"})
+	}
+	return claims.(jwt.MapClaims)
 }

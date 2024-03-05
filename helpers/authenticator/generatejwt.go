@@ -16,6 +16,7 @@ type MyCustomClaims struct {
 	jwt.RegisteredClaims
 }
 
+// get personal data by their NIK
 func GetPersonalByNIK(nik string) (models.TPersonal, error) {
 	var personal models.TPersonal
 	var field = fmt.Sprintf(`"NIK"`)
@@ -23,6 +24,13 @@ func GetPersonalByNIK(nik string) (models.TPersonal, error) {
 	return personal, err
 }
 
+// generate jwtn
+//
+// sub: nik
+//
+// nam: name
+//
+// eml: email
 func GenerateJWT(nik string) (string, error) {
 	initializers.InitEnv()
 	lifetime := os.Getenv("TOKEN_LIFE_HOUR")
@@ -43,9 +51,10 @@ func GenerateJWT(nik string) (string, error) {
 	claims := jwt.MapClaims{
 		"exp":  jwt.NewNumericDate(time.Now().Add(time.Duration(life) * time.Hour)),
 		"iss":  "system",
-		"sub":  fmt.Sprintf("%s", personal.Nam),
-		"eml":  fmt.Sprintf("%s", personal.Eml),
-		"isat": jwt.NewNumericDate(time.Now()),
+		"sub":  personal.Nik,
+		"eml":  personal.Eml,
+		"nam":  personal.Nam,
+		"rlcd": personal.Rlcd,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
