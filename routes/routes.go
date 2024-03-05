@@ -8,4 +8,5 @@ import (
 func InitializeRoutes(router *gin.Engine) {
 	router.GET("/ping", ping)
 	router.GET("/personal", GetAllPersonal)
+	router.POST("/login", Login)
 }

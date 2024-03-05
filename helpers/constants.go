@@ -1,6 +1,8 @@
 package helpers
 
-import "time"
+import (
+	"time"
+)
 
 var Today = time.Now().Truncate(24 * time.Hour)
 var Yesterday = time.Now().AddDate(0, 0, -1)

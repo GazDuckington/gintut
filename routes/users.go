@@ -16,6 +16,5 @@ func ping(c *gin.Context) {
 
 func GetAllPersonal(c *gin.Context) {
 	var personal []models.TPersonal
-
 	controllers.GetTable(c, personal)
 }

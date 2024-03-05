@@ -3,18 +3,38 @@ package controllers
 import (
 	"fmt"
 	"gintut/helpers"
+	"gintut/initializers"
 	"net/http"
+	"reflect"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
+func GetModel(model interface{}, fieldName string, fieldValue interface{}) error {
+	initializers.InitEnv()
+	db := initializers.InitDb()
+
+	// Create a new instance of the model
+	instance := reflect.New(reflect.TypeOf(model).Elem()).Interface()
+
+	// Retrieve the single record
+	if err := db.Where(fieldName+" = ?", fieldValue).First(instance).Error; err != nil {
+		return err
+	}
+
+	// Copy the data from the instance to the provided model pointer
+	reflect.ValueOf(model).Elem().Set(reflect.ValueOf(instance).Elem())
+
+	return nil
+}
+
 // GetAll is a generic function to fetch all records of a given model.
 func GetTable(c *gin.Context, model interface{}) {
+	var order string
 
 	// Get the DB instance from Gin's context
-	var order string
 	orderBy := c.Query("order_by") // Assuming 'order_by' is the query parameter for ordering
 	db := c.MustGet("db").(*gorm.DB)
 
