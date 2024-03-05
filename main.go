@@ -22,11 +22,15 @@ func main() {
 		c.Next()
 	})
 
-	protected := router.Group("/protected")
-	protected.Use(authenticator.AuthMiddleware())
-	routes.RouteGroupProtected(protected)
+	api := router.Group("/api/v1")
+	{
+		// Apply authentication middleware to RouteGroupProtected routes
+		protected := api.Group("/protected")
+		protected.Use(authenticator.AuthMiddleware())
+		routes.RouteGroupProtected(protected)
 
-	unprotected := router.Group("/")
-	routes.RouteGroupUnprotected(unprotected)
+		// Include RouteGroupUnprotected routes directly under /api/v1
+		routes.RouteGroupUnprotected(api)
+	}
 	router.Run() // listen and serve on 0.0.0.0:8080
 }
