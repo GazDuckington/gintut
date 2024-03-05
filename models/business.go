@@ -1,6 +1,7 @@
 package models
 
 import (
+	"gintut/helpers"
 	"time"
 )
 
@@ -27,12 +28,16 @@ func (TBusinessunit) TableName() string {
 
 func (bu *TBusinessunit) SoftDelete(deletedBy string) {
 	bu.Chgby = deletedBy
-	bu.Chgda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
-	bu.Endda = time.Now().AddDate(0, 0, -1)
+	bu.Chgda = helpers.Today
+	bu.Endda = helpers.Yesterday
 }
 
 func (bu *TBusinessunit) Undelete(restoredBy string) {
 	bu.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
-	bu.Chgda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
+	bu.Chgda = helpers.Today
 	bu.Chgby = restoredBy
+}
+
+func (bu *TBusinessunit) Delete(deletedBy string) {
+	bu.SoftDelete(deletedBy)
 }

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"gintut/helpers"
 	"time"
 	// "gorm.io/gorm"
 )
@@ -39,16 +40,22 @@ func (t *TPersonal) TableName() string {
 }
 
 func (t *TPersonal) SoftDelete(deletedBy string) {
-	t.Endda = time.Now().AddDate(0, 0, -1)
+	t.Endda = helpers.Yesterday
 	t.Isact = false
 	t.Chgby = deletedBy
+	t.Chgda = helpers.Today
 }
 
 func (t *TPersonal) Undelete(restoredBy string) {
 	t.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
 	t.Isact = true
 	t.Chgby = restoredBy
+	t.Chgda = helpers.Today
 	t.Stat = ""
+}
+
+func (user *TPersonal) Delete(deletedBy string) {
+	user.SoftDelete(deletedBy)
 }
 
 type TUsers struct {
@@ -93,18 +100,22 @@ func (TUsers) TableName() string {
 }
 
 // SoftDelete soft deletes the user by setting Isact to false and updating Endda
-func (user *TUsers) SoftDelete() {
+func (user *TUsers) SoftDelete(deletedBy string) {
 	user.Isact = false
-	user.Endda = time.Now().Add(-24 * time.Hour) // Example: Set to yesterday
+	user.Endda = helpers.Yesterday
+	user.Chgby = deletedBy
+	user.Chgda = helpers.Today
 }
 
 // Undelete undeletes the user by setting Endda back to the default value
-func (user *TUsers) Undelete() {
+func (user *TUsers) Undelete(restoredBy string) {
 	user.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
 	user.Isact = true
+	user.Chgby = restoredBy
+	user.Chgda = helpers.Today
 }
 
 // Delete soft deletes the user (wrapper for SoftDelete for consistency)
-func (user *TUsers) Delete() {
-	user.SoftDelete()
+func (user *TUsers) Delete(deletedBy string) {
+	user.SoftDelete(deletedBy)
 }
