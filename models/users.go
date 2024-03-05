@@ -45,14 +45,14 @@ func (t *TPersonal) SoftDelete(deletedBy string) {
 }
 
 func (t *TPersonal) Undelete(restoredBy string) {
-	t.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.UTC)
+	t.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
 	t.Isact = true
 	t.Chgby = restoredBy
 	t.Stat = ""
 }
 
 type TUsers struct {
-	Begda     time.Time `gorm:"column:BEGDA;default:current_date"`
+	Begda     time.Time `gorm:"column:BEGDA;default:CURRENT_DATE"`
 	Endda     time.Time `gorm:"column:ENDDA;default:'2999-01-01'"`
 	Usid      string    `gorm:"column:USID;primaryKey;type:uuid;default:uuid_generate_v4()"`
 	Usrn      string    `gorm:"column:USRN"`
@@ -100,7 +100,7 @@ func (user *TUsers) SoftDelete() {
 
 // Undelete undeletes the user by setting Endda back to the default value
 func (user *TUsers) Undelete() {
-	user.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.UTC)
+	user.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
 	user.Isact = true
 }
 

@@ -5,6 +5,8 @@ import (
 	"gintut/initializers"
 	"gintut/routes"
 	"log"
+	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,6 +15,14 @@ func main() {
 	// initialize some stuffs
 	initializers.InitEnv()
 	db := initializers.InitDb()
+
+	// Set the time zone globally
+	loc, err := time.LoadLocation(os.Getenv("TIME_ZONE"))
+	if err != nil {
+		// Handle error if the time zone cannot be loaded
+		panic(err)
+	}
+	time.Local = loc
 
 	// initialize routes
 	router := gin.Default()

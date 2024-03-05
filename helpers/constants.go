@@ -5,5 +5,5 @@ import (
 )
 
 var Today = time.Now().Truncate(24 * time.Hour)
-var Yesterday = time.Now().AddDate(0, 0, -1)
-var ThisYr = time.Now().Year()
+var Yesterday = time.Now().Local().AddDate(0, 0, -1)
+var ThisYr = time.Now().Local().Year()
