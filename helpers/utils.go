@@ -18,12 +18,13 @@ type PaginationResult struct {
 func Paginate(db *gorm.DB, c *gin.Context, m interface{}) *PaginationResult {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
-	offset := (page - 1) * pageSize
+	// offset := (page - 1) * pageSize
 
 	var count int64
 	db.Model(m).Count(&count)
+
 	var nextPage *int
-	if int(count) > offset+pageSize {
+	if int(count) > pageSize {
 		nextPageValue := page + 1
 		nextPage = &nextPageValue
 	}
@@ -41,7 +42,7 @@ func Paginate(db *gorm.DB, c *gin.Context, m interface{}) *PaginationResult {
 	}
 
 	return &PaginationResult{
-		DB:         db.Offset(offset).Limit(pageSize),
+		DB:         db.Limit(pageSize),
 		Pagination: pagination,
 	}
 }
