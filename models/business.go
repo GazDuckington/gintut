@@ -2,8 +2,6 @@ package models
 
 import (
 	"time"
-	// "github.com/google/uuid"
-	// "gorm.io/gorm"
 )
 
 type TBusinessunit struct {
@@ -29,9 +27,12 @@ func (TBusinessunit) TableName() string {
 
 func (bu *TBusinessunit) SoftDelete(deletedBy string) {
 	bu.Chgby = deletedBy
+	bu.Chgda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
 	bu.Endda = time.Now().AddDate(0, 0, -1)
 }
 
 func (bu *TBusinessunit) Undelete(restoredBy string) {
 	bu.Endda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
+	bu.Chgda = time.Date(2999, time.January, 1, 0, 0, 0, 0, time.Now().Local().Location())
+	bu.Chgby = restoredBy
 }

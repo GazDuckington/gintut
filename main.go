@@ -12,12 +12,19 @@ import (
 )
 
 func main() {
+	var tz string
 	// initialize some stuffs
 	initializers.InitEnv()
 	db := initializers.InitDb()
 
+	value := os.Getenv("TIME_ZONE")
+	if value == "" {
+		tz = "Asia/Jakarta"
+	}
+	tz = value
+
 	// Set the time zone globally
-	loc, err := time.LoadLocation(os.Getenv("TIME_ZONE"))
+	loc, err := time.LoadLocation(tz)
 	if err != nil {
 		// Handle error if the time zone cannot be loaded
 		panic(err)

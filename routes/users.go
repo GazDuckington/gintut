@@ -23,3 +23,9 @@ func GetAllPersonal(c *gin.Context) {
 	var personal []models.TPersonal
 	controllers.GetTable(c, personal)
 }
+
+// get all business unit
+func GetAllBusinessUnits(c *gin.Context) {
+	var businessUnit []models.TBusinessunit
+	controllers.GetTable(c, businessUnit)
+}

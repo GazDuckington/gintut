@@ -32,17 +32,26 @@ func GetModel(model interface{}, fieldName string, fieldValue interface{}) error
 }
 
 // generic function to fetch all records of a given model.
+//
+// database filtering and sorting are done here
 func GetTable(c *gin.Context, model interface{}) {
-	var order string
 
+	qParams := c.Request.URL.Query()
 	// Get the DB instance from Gin's context
-	orderBy := c.Query("order_by") // Assuming 'order_by' is the query parameter for ordering
 	db := c.MustGet("db").(*gorm.DB)
 
 	// Apply ordering if specified
-	if orderBy != "" {
-		order = fmt.Sprintf(`"%s"`, strings.ToUpper(orderBy))
+	if orderBy := qParams.Get("order_by"); orderBy != "" {
+		order := fmt.Sprintf(`"%s"`, strings.ToUpper(orderBy))
+		qParams.Del("order_by")
+		c.Request.URL.RawQuery = qParams.Encode()
 		db = db.Order(order)
+	}
+
+	if endda_only := qParams.Get("endda_only"); endda_only == "true" {
+		qParams.Del("endda_only")
+		c.Request.URL.RawQuery = qParams.Encode()
+		db = db.Where(`"ENDDA" > ?`, helpers.Today.Format("2006-01-02"))
 	}
 	// Dynamic filter
 	// Assuming helpers.DynamicFilter accepts a *gorm.DB and returns a *gorm.DB

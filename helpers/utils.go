@@ -36,14 +36,13 @@ func Paginate(db *gorm.DB, c *gin.Context, m interface{}) *PaginationResult {
 	}
 }
 
-// add dynamic filtering on models fields
+// dynamically lookup filed=value from request parameters
 func DynamicFilter(db *gorm.DB, c *gin.Context) *gorm.DB {
 	qParams := c.Request.URL.Query()
 
 	// Remove pagination parameters
 	qParams.Del("page")
 	qParams.Del("page_size")
-	qParams.Del("order_by")
 
 	// Create dynamic filters
 	var dynamicFilters []string
@@ -60,9 +59,11 @@ func DynamicFilter(db *gorm.DB, c *gin.Context) *gorm.DB {
 	}
 
 	// Construct the final dynamic filter query
-	dynamicQuery := strings.Join(dynamicFilters, " AND ")
+	if dynamicFilters != nil {
+		db = db.Where(strings.Join(dynamicFilters, " AND "), queryParams...)
+	}
 
 	// Apply dynamic filter to the query
-	return db.Where(dynamicQuery, queryParams...)
+	return db
 
 }
