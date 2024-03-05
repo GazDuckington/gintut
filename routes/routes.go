@@ -6,13 +6,15 @@ import (
 
 // route group to be protected by bearer token
 func RouteGroupProtected(router *gin.RouterGroup) {
+	userGroup := router.Group("/users")
 	router.GET("/ping", ping)
-	router.GET("/personal", GetAllPersonal)
+	userGroup.GET("/list", GetAllPersonal)
 	router.GET("/bu", GetAllBusinessUnits)
 }
 
 // route group to be unprotected by bearer token
 func RouteGroupUnprotected(router *gin.RouterGroup) {
-	router.POST("/login", Login)
+	authGroup := router.Group("/auth")
+	authGroup.POST("/login", Login)
 	router.GET("/get_server_time", GetServerTime)
 }
