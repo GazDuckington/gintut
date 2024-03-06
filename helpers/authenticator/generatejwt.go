@@ -7,6 +7,7 @@ import (
 	"gintut/models"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -17,20 +18,14 @@ type MyCustomClaims struct {
 }
 
 // get personal data by their NIK
-func GetPersonalByNIK(nik string) (models.TPersonal, error) {
+func GetPersonalDetail(field string, value string) (models.TPersonal, error) {
 	var personal models.TPersonal
-	var field = fmt.Sprintf(`"NIK"`)
-	err := controllers.GetModel(&personal, field, nik)
+	var lookup = fmt.Sprintf(`"%s"`, strings.ToUpper(field))
+	err := controllers.GetModel(&personal, lookup, value)
 	return personal, err
 }
 
-// generate jwtn
-//
-// sub: nik
-//
-// nam: name
-//
-// eml: email
+// generate jwt
 func GenerateJWT(nik string) (string, error) {
 	initializers.InitEnv()
 	lifetime := os.Getenv("TOKEN_LIFE_HOUR")
@@ -42,7 +37,7 @@ func GenerateJWT(nik string) (string, error) {
 		return "", err
 	}
 
-	personal, err := GetPersonalByNIK(nik)
+	personal, err := GetPersonalDetail("nik", nik)
 	if err != nil {
 		fmt.Println(err)
 		return "", err

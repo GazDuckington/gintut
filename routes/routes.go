@@ -9,6 +9,7 @@ func RouteGroupProtected(router *gin.RouterGroup) {
 	userGroup := router.Group("/users")
 	router.GET("/ping", ping)
 	userGroup.GET("/list", GetAllPersonal)
+	userGroup.GET("/detail/:email", GetUserByEmail)
 	router.GET("/bu", GetAllBusinessUnits)
 }
 
